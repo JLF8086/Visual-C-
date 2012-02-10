@@ -8,8 +8,8 @@
     <ProjectGuid>{683B45AF-1580-4F7B-9795-FA8053112A9D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Minesweeper_server</RootNamespace>
-    <AssemblyName>Minesweeper server</AssemblyName>
+    <RootNamespace>Client</RootNamespace>
+    <AssemblyName>Client</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
