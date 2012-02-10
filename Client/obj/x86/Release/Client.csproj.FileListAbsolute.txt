@@ -1,5 +1,0 @@
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\bin\Release\Client.exe
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\bin\Release\Client.pdb
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Release\ResolveAssemblyReference.cache
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Release\Client.exe
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Release\Client.pdb

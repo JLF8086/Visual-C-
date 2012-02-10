@@ -1,5 +1,8 @@
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\bin\Debug\Client.exe
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\bin\Debug\Client.pdb
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Debug\Client.exe
-C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\obj\x86\Debug\Client.pdb
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\bin\Debug\Minesweeper server.exe.config
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\bin\Debug\Minesweeper server.exe
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\bin\Debug\Minesweeper server.pdb
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\obj\x86\Debug\Minesweeper server.exe
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\obj\x86\Debug\Minesweeper server.pdb
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper server\bin\Debug\Client.exe.config
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Client\bin\Debug\Client.exe.config
