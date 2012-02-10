@@ -1,0 +1,5 @@
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe.config
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper\obj\x86\Debug\Minesweeper.Properties.Resources.resources
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper\obj\x86\Debug\ResGen.read.1.tlog
+C:\Users\Tomas\Documents\Visual Studio 2010\Projects\Minesweeper\Minesweeper\obj\x86\Debug\ResGen.write.1.tlog
