@@ -9,15 +9,16 @@ public class TCPServer
 
     public static void Main()
     {
+        String[] strings = { "Eik", "Tu", "Nachui" };
         IPAddress ipAddress = IPAddress.Any;
         TcpListener listener = new TcpListener(ipAddress, port);
         listener.Start();
         Console.WriteLine("Server is running");
         Console.WriteLine("Listening on port " + port);
         Console.WriteLine("Waiting for connections...");
+        Socket s = listener.AcceptSocket();
         while (true)
         {
-            Socket s = listener.AcceptSocket();
             Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
             byte[] b = new byte[65535];
             int k = s.Receive(b);
@@ -26,7 +27,7 @@ public class TCPServer
                 Console.Write(Convert.ToChar(b[i]));
             Console.Write("\n");
             ASCIIEncoding enc = new ASCIIEncoding();
-            s.Send(enc.GetBytes("Hello\n"));
+            s.Send(enc.GetBytes(strings[new Random().Next(strings.Length)]));
             Console.WriteLine("Sent Response");
             //s.Close();
             if (!IsConnected(s))

@@ -22,6 +22,8 @@ public class clnt
             Console.WriteLine("Connected");
             while (true)
             {
+                //if (!tcpclnt.Client.Poll(-1, SelectMode.SelectError))
+                    //break;
                 Console.Write("Enter the string to be transmitted : ");
 
                 String str = Console.ReadLine();
@@ -36,17 +38,20 @@ public class clnt
                 stm.Write(ba, 0, ba.Length);
 
                 byte[] bb = new byte[100];
-                int k = stm.Read(bb, 0, 100);
+                int k = stm.Read(bb, 0, 25);
 
                 for (int i = 0; i < k; i++)
                     Console.Write(Convert.ToChar(bb[i]));
+                Console.WriteLine();
+                
             }
             tcpclnt.Close();
         }
-
+        
         catch (Exception e)
         {
             Console.WriteLine("Error..... " + e.Message);
         }
+        Console.WriteLine("opa");
     }
 }
