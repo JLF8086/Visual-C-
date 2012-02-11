@@ -9,7 +9,7 @@ public class TCPServer
 
     public static void Main()
     {
-        String[] strings = { "Eik", "Tu", "Nachui" };
+        String[] strings = { "Einz", "Zwei", "Drei" };
         IPAddress ipAddress = IPAddress.Any;
         TcpListener listener = new TcpListener(ipAddress, port);
         listener.Start();
