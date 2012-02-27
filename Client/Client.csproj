@@ -34,9 +34,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,10 +50,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="InputIp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputIp.Designer.cs">
+      <DependentUpon>InputIp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MinesweeperGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MinesweeperGUI.Designer.cs">
+      <DependentUpon>MinesweeperGUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="InputIp.resx">
+      <DependentUpon>InputIp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MinesweeperGUI.resx">
+      <DependentUpon>MinesweeperGUI.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

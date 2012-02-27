@@ -3,55 +3,105 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Net.Sockets;
+using System.Windows.Forms;
+using System.Collections;
 
-
-public class clnt
+namespace Client
 {
-
-    public static void Main()
+    public class Client
     {
-
-        try
-        {
-            TcpClient tcpclnt = new TcpClient();
-            Console.WriteLine("Connecting.....");
-
-            tcpclnt.Connect("78.63.226.214", 8001);
-            // use the ipaddress as in the server program
-
-            Console.WriteLine("Connected");
-            while (true)
-            {
-                //if (!tcpclnt.Client.Poll(-1, SelectMode.SelectError))
-                    //break;
-                Console.Write("Enter the string to be transmitted : ");
-
-                String str = Console.ReadLine();
-                if (str == "quit")
-                    break;
-                Stream stm = tcpclnt.GetStream();
-
-                ASCIIEncoding asen = new ASCIIEncoding();
-                byte[] ba = asen.GetBytes(str);
-                Console.WriteLine("Transmitting.....");
-
-                stm.Write(ba, 0, ba.Length);
-
-                byte[] bb = new byte[100];
-                int k = stm.Read(bb, 0, 25);
-
-                for (int i = 0; i < k; i++)
-                    Console.Write(Convert.ToChar(bb[i]));
-                Console.WriteLine();
-                
-            }
-            tcpclnt.Close();
-        }
         
-        catch (Exception e)
+        public static string IP;
+        private static ASCIIEncoding asc = new ASCIIEncoding();
+        private static TcpClient tcpclnt;
+        private static MinesweeperGUI gui;
+
+        public static void Main()
         {
-            Console.WriteLine("Error..... " + e.Message);
+            //Application.Run(new MinesweeperGUI());
+            try
+            {
+                while (true)
+                {
+
+                    try
+                    {
+                        /*Application.Run(new InputIp());
+                        tcpclnt = new TcpClient();
+                        if (IP == null)
+                            return;
+                        Console.WriteLine(IP);
+                        tcpclnt.Connect(IP, 8001);*/
+                        tcpclnt = new TcpClient();
+                        tcpclnt.Connect("localhost", 8001);
+                        Console.WriteLine("Connection established");
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("Error : " + e);
+                        continue;
+                    }
+                    break;
+                }
+                gui = new MinesweeperGUI(tcpclnt);
+                Application.Run(gui);
+
+            }
+
+            catch (Exception e)
+            {
+                MessageBox.Show("Error : " + e);
+            }
         }
-        Console.WriteLine("opa");
+
+        public static string sendMessage(string msg)
+        {
+            string response = String.Empty;
+            Stream stream = tcpclnt.GetStream();
+            byte[] msgBytes = asc.GetBytes(msg);
+            stream.Write(msgBytes, 0, msgBytes.Length);
+            byte[] buffer = new byte[gui.width * gui.height * 9];
+            int responseLength = stream.Read(buffer, 0, buffer.Length);
+            for (int i = 0; i < responseLength; i++)
+            {
+                response += (char)buffer[i];
+            }
+            /*Console.WriteLine("Response from server:");
+            Console.WriteLine(response);*/
+            parseMessage(response);
+            return response;
+
+
+        }
+
+        public static void parseMessage(string msg)
+        {
+            string[] tokens = msg.Split(' ');
+            /*foreach (string s in tokens)
+                s.Trim();*/
+            //Console.WriteLine("eik tu nx " + tokens[0]);
+            switch (tokens[0])
+            {
+                case "ok":
+                    return;
+                case "explode":
+                    gui.explode(tokens);
+                    break;
+                case "reveal":
+                    gui.revealTiles(tokens);
+                    break;
+                case "dismantle":
+                case "flag":
+                case "none":
+                    {
+                        gui.modifyAddon(msg);
+                        break;
+                    }
+
+            }
+            return;
+        }
+
+        
     }
 }
