@@ -23,6 +23,7 @@ namespace Server
 
         public static void Main()
         {
+            Console.WriteLine("Waiting for connections...");
             Socket s = getConnection();
             Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
             
@@ -45,25 +46,6 @@ namespace Server
                 Console.WriteLine("Connection stopped: " + e);
 
             }
-            /*while (true)
-            {
-                Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-                byte[] b = new byte[65535];
-                int k = s.Receive(b);
-                Console.WriteLine("Received:");
-                for (int i = 0; i < k; i++)
-                    Console.Write(Convert.ToChar(b[i]));
-                Console.Write("\n");
-                s.Send(enc.GetBytes(strings[new Random().Next(strings.Length)]));
-                Console.WriteLine("Sent Response");
-                //s.Close();
-                if (!IsConnected(s))
-                {
-                    Console.WriteLine(s.RemoteEndPoint + " has disconnected");
-                    s.Close();
-                    break;
-                }
-            }*/
 
         }
 
@@ -101,7 +83,7 @@ namespace Server
                     }
                     catch (Exception e)
                     {
-                        s.Send(enc.GetBytes("error " + e.ToString()));
+                        Console.WriteLine(e);
                     }
                     break; 
                 }
@@ -109,7 +91,9 @@ namespace Server
                 case "leftclick":
                 {
 
-                    string response = game.leftclick(Convert.ToInt32(tokens[1]), Convert.ToInt32(tokens[2]));
+                    string response = game.leftclick(
+                        Convert.ToInt32(tokens[1]), 
+                        Convert.ToInt32(tokens[2]));
                     //Console.WriteLine(response);
                     s.Send(enc.GetBytes(response));
                     break;

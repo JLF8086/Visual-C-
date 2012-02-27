@@ -13,10 +13,8 @@ namespace Server
         private int dismantles = 0;
         private Tile[,] tiles;
 
-        public Game(int height, int width, int mines)
+        public Game(int width, int height, int mines)
         {
-            if (mines > height * width)
-                throw new Exception("Too many mines!");
             this.height = height;
             this.width = width;
             this.mines = mines;
@@ -27,25 +25,14 @@ namespace Server
             Random rand = new Random();
             for (int i = 0; i < mines; )
             {
-                int r1 = rand.Next(height);
-                int r2 = rand.Next(width);
+                int r1 = rand.Next(width);
+                int r2 = rand.Next(height);
                 if (tiles[r1, r2].status == Tile.TileStatus.CLEAN)
                 {
                     tiles[r1, r2].status = Tile.TileStatus.MINED;
                     i++;
                 }
             }
-        }
-
-        int Height
-        {
-            get { return height; }
-            set { height = value; }
-        }
-
-        private string open(string[] parameters)
-        {
-            return "baba";
         }
 
         public string leftclick(int x, int y)
@@ -101,21 +88,14 @@ namespace Server
         public string explode()
         {
             string ret = "explode ";
-            for (int i = 0; i < height; i++)
-                for (int j = 0; j < width; j++)
+            for (int i = 0; i < width; i++)
+                for (int j = 0; j < height; j++)
                 {
                     ret += reveal(i, j) + " ";
                     tiles[i, j].addon = Tile.TileAddon.NONE;
                 }
             return ret;
         }
-
-        public static void handleMessage(string message)
-        {
-            string[] tokens = message.Split(' ');
-            
-        }
-
         public string reveal(int x, int y)
         {
             tiles[x, y].opened = true;

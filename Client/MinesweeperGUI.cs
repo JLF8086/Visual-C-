@@ -12,9 +12,11 @@ namespace Client
 {
     public partial class MinesweeperGUI : Form
     {
-        public int height = 20, width = 20, mines = 50;
+        public int height = Client.height, width = Client.width, mines = Client.mines;
         private MineFieldButton[,] butArray;
         private TcpClient tcpclnt;
+        private System.Timers.Timer timer;
+        int time;
         public MinesweeperGUI(TcpClient tcpclnt)
         {
             this.tcpclnt = tcpclnt;
@@ -36,10 +38,11 @@ namespace Client
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Error : " + e);
+                    MessageBox.Show("Error : " + e + " " + param[i]);
                 }
 
             }
+            timer.Close();
 
 
         }
@@ -57,9 +60,26 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (timer != null)
+                timer.Close();
             this.mineField.Controls.Clear();
             fillPanel(this.mineField);
-            string response = Client.sendMessage("start " + height + " " + width + " " + mines);
+            labelTime.Text = "0";
+            timer = new System.Timers.Timer();
+            timer.Interval = 1000;
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(onTick);
+            labelDismantles.Text = mines.ToString();
+            time = 0;
+            timer.Start();
+
+
+            string response = Client.sendMessage("start " + width + " " + height + " " + mines);
+        }
+
+        private void onTick(object sender, EventArgs e)
+        {
+            time++;
+            labelTime.Text = time.ToString();
         }
 
         void fillPanel(Panel pan)
@@ -68,14 +88,13 @@ namespace Client
             for (int i = 0; i < this.width; i++)
                 for (int j = 0; j < this.height; j++)
                 {
-
                     MineFieldButton but = new MineFieldButton();
                     but.x = i;
                     but.y = j;
                     but.Height = pan.Height / this.height;
                     but.Width = pan.Width / this.width;
-                    but.Left = but.Width * j;
-                    but.Top = but.Height * i;
+                    but.Left = but.Width * i;
+                    but.Top = but.Height * j;
                     but.MouseDown += new MouseEventHandler(but_MouseClick);
                     butArray[i, j] = but;
                     but.Visible = false;
@@ -178,7 +197,7 @@ namespace Client
                             this.ForeColor = Color.Orange;
                             break;
                         case 8:
-                            this.ForeColor = Color.Ivory;
+                            this.ForeColor = Color.Purple;
                             break;
                     }
                 }

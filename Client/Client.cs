@@ -15,10 +15,10 @@ namespace Client
         private static ASCIIEncoding asc = new ASCIIEncoding();
         private static TcpClient tcpclnt;
         private static MinesweeperGUI gui;
+        public static int height, width, mines;
 
         public static void Main()
         {
-            //Application.Run(new MinesweeperGUI());
             try
             {
                 while (true)
@@ -26,14 +26,12 @@ namespace Client
 
                     try
                     {
-                        /*Application.Run(new InputIp());
+                        Application.Run(new InputIp());
                         tcpclnt = new TcpClient();
                         if (IP == null)
                             return;
                         Console.WriteLine(IP);
-                        tcpclnt.Connect(IP, 8001);*/
-                        tcpclnt = new TcpClient();
-                        tcpclnt.Connect("localhost", 8001);
+                        tcpclnt.Connect(IP, 8001);
                         Console.WriteLine("Connection established");
                     }
                     catch (Exception e)
@@ -66,8 +64,6 @@ namespace Client
             {
                 response += (char)buffer[i];
             }
-            /*Console.WriteLine("Response from server:");
-            Console.WriteLine(response);*/
             parseMessage(response);
             return response;
 
@@ -77,9 +73,6 @@ namespace Client
         public static void parseMessage(string msg)
         {
             string[] tokens = msg.Split(' ');
-            /*foreach (string s in tokens)
-                s.Trim();*/
-            //Console.WriteLine("eik tu nx " + tokens[0]);
             switch (tokens[0])
             {
                 case "ok":
