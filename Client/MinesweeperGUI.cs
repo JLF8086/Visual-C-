@@ -16,38 +16,36 @@ namespace Client
         private MineFieldButton[,] butArray;
         private TcpClient tcpclnt;
         private System.Timers.Timer timer;
-        int time;
         public MinesweeperGUI(TcpClient tcpclnt)
         {
             this.tcpclnt = tcpclnt;
             InitializeComponent();
         }
 
-        public void explode(string[] param)
+        public void Explode(string[] param)
         {
             foreach (MineFieldButton but in butArray)
                 but.MouseDown -= but_MouseClick;
             for (int i = 1; i < param.Length; i++)
             {
                 string[] tokens = param[i].Split('*');
-                try
-                {
-                    butArray[Convert.ToInt32(tokens[0]),
+                butArray[Convert.ToInt32(tokens[0]),
                         Convert.ToInt32(tokens[1])]
                         .setAppearance(tokens[2]);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Error : " + e + " " + param[i]);
-                }
 
             }
             timer.Close();
-
-
         }
 
-        public void revealTiles(string[] param)
+        public void EndGame()
+        {
+            foreach (MineFieldButton but in butArray)
+                but.MouseDown -= but_MouseClick;
+            timer.Close();
+            MessageBox.Show("You win!");
+        }
+
+        public void RevealTiles(string[] param)
         {
             for (int i = 1; i < param.Length; i++)
             {
@@ -69,17 +67,15 @@ namespace Client
             timer.Interval = 1000;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(onTick);
             labelDismantles.Text = mines.ToString();
-            time = 0;
             timer.Start();
 
 
-            string response = Client.sendMessage("start " + width + " " + height + " " + mines);
+            Client.SendMessage("start " + width + " " + height + " " + mines);
         }
 
         private void onTick(object sender, EventArgs e)
         {
-            time++;
-            labelTime.Text = time.ToString();
+            Client.SendMessage("elapsedtime");
         }
 
         void fillPanel(Panel pan)
@@ -109,13 +105,17 @@ namespace Client
         void but_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-                Client.sendMessage(String.Format("leftclick {0} {1}", (sender as MineFieldButton).x, (sender as MineFieldButton).y));
-            if (e.Button == MouseButtons.Right)
-                Client.sendMessage(String.Format("rightclick {0} {1}", (sender as MineFieldButton).x, (sender as MineFieldButton).y));
+            {
+                Client.SendMessage(String.Format("leftclick {0} {1}", (sender as MineFieldButton).x, (sender as MineFieldButton).y));
+                Client.SendMessage("minesleft");
+            }
+            else if (e.Button == MouseButtons.Right)
+                Client.SendMessage(String.Format("rightclick {0} {1}", (sender as MineFieldButton).x, (sender as MineFieldButton).y));
+            Client.SendMessage("isgameover?");
         }
 
 
-        public void modifyAddon(string msg)
+        public void ModifyAddon(string msg)
         {
             string[] tokens = msg.Split(' ');
             int x = Convert.ToInt32(tokens[1]);
@@ -152,6 +152,7 @@ namespace Client
             }
             else if (str == "e")
             {
+                this.Text = String.Empty;
                 this.BackColor = SystemColors.ControlLight;
                 this.FlatStyle = FlatStyle.Flat;
                 this.Enabled = false;
@@ -167,12 +168,14 @@ namespace Client
                 int m = Convert.ToInt32(str);
                 if (m == 0)
                 {
+                    this.Text = String.Empty;
                     this.BackColor = SystemColors.ControlLight;
                     this.FlatStyle = FlatStyle.Flat;
                 }
                 else
                 {
                     this.Text = m.ToString();
+                    this.BackColor = Color.Empty;
                     switch (m)
                     {
                         case 1:

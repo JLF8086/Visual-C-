@@ -11,11 +11,12 @@ namespace Server
         private static ASCIIEncoding enc = new ASCIIEncoding();
         private static Game game;
         private static byte[] b = new byte[65535];
+        private static IPAddress ipAddress = IPAddress.Any;
+        private static TcpListener listener = new TcpListener(ipAddress, port);
 
-        private static Socket getConnection()
+        private static Socket GetConnection()
         {
-            IPAddress ipAddress = IPAddress.Any;
-            TcpListener listener = new TcpListener(ipAddress, port);
+            listener.Stop();
             listener.Start();
             Socket s = listener.AcceptSocket();
             return s;
@@ -26,7 +27,7 @@ namespace Server
             while (true)
             {
                 Console.WriteLine("Waiting for connections...");
-                Socket s = getConnection();
+                Socket s = GetConnection();
                 Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
                 try
@@ -34,22 +35,21 @@ namespace Server
                     while (true)
                     {
 
-                        receiveMessage(s);
-                        if (!IsConnected(s))
-                        {
-                            Console.WriteLine(s.RemoteEndPoint + " has disconnected");
-                            s.Close();
-                            break;
-                        }
+                        ReceiveMessage(s);
+
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Connection stopped: " + e.Message);
                 }
-                if (!IsConnected(s))
+                finally
                 {
-                    Console.WriteLine(s.RemoteEndPoint + " has disconnected..");
+                    if (!IsConnected(s))
+                    {
+                        Console.WriteLine(s.RemoteEndPoint + " has disconnected");
+                        s.Close();
+                    }
                 }
             }
 
@@ -67,7 +67,7 @@ namespace Server
             }
         }
 
-        public static void receiveMessage(Socket s)
+        public static void ReceiveMessage(Socket s)
         {
             int k = s.Receive(b);
             Console.WriteLine("Received:");
@@ -80,6 +80,14 @@ namespace Server
 
             switch (tokens[0])
             {
+                case "isgameover?":
+                {
+                    if (game.IsOver())
+                        s.Send(enc.GetBytes("gameisover"));
+                    else
+                        s.Send(enc.GetBytes("gamenotover"));
+                    break;
+                }
                 case "start": 
                 {
                     try
@@ -97,7 +105,7 @@ namespace Server
                 case "leftclick":
                 {
 
-                    string response = game.leftclick(
+                    string response = game.LeftClick(
                         Convert.ToInt32(tokens[1]), 
                         Convert.ToInt32(tokens[2]));
                     //Console.WriteLine(response);
@@ -105,17 +113,30 @@ namespace Server
                     break;
                 }
 
+                case "elapsedtime":
+                {
+                    s.Send(enc.GetBytes("elapsedtime " + game.time.ToString()));
+                    break;
+                }
                 case "rightclick":
                 {
 
-                    string response = game.rightclick(Convert.ToInt32(tokens[1]), Convert.ToInt32(tokens[2]));
+                    string response = game.RightClick(Convert.ToInt32(tokens[1]), Convert.ToInt32(tokens[2]));
                     //Console.WriteLine(response);
                     s.Send(enc.GetBytes(response));
                     break;
-                } 
+                }
+
+                case "minesleft":
+                {
+                    string response = "minesleft " + game.MinesLeft;
+                    s.Send(enc.GetBytes(response));
+                    break;
+                }
 
 
             }
+
 
             //s.Send(enc.GetBytes(receivedMessage.Split(' ')[0]));
             //Console.WriteLine("Sent Response");

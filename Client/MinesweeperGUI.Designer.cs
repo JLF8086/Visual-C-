@@ -99,7 +99,7 @@
         #endregion
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel mineField;
-        private System.Windows.Forms.Label labelTime;
-        private System.Windows.Forms.Label labelDismantles;
+        public System.Windows.Forms.Label labelTime;
+        public System.Windows.Forms.Label labelDismantles;
     }
 }

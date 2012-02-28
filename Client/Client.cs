@@ -49,10 +49,11 @@ namespace Client
             catch (Exception e)
             {
                 MessageBox.Show("Error : " + e);
+                tcpclnt.Close();
             }
         }
 
-        public static string sendMessage(string msg)
+        public static void SendMessage(string msg)
         {
             string response = String.Empty;
             Stream stream = tcpclnt.GetStream();
@@ -64,33 +65,39 @@ namespace Client
             {
                 response += (char)buffer[i];
             }
-            parseMessage(response);
-            return response;
+            ParseMessage(response);
 
 
         }
 
-        public static void parseMessage(string msg)
+        public static void ParseMessage(string msg)
         {
             string[] tokens = msg.Split(' ');
             switch (tokens[0])
             {
+                case "gameisover":
+                    gui.EndGame();
+                    break;
+                case "gamenotover":
                 case "ok":
                     return;
                 case "explode":
-                    gui.explode(tokens);
+                    gui.Explode(tokens);
                     break;
                 case "reveal":
-                    gui.revealTiles(tokens);
+                    gui.RevealTiles(tokens);
+                    break;
+                case "elapsedtime":
+                    gui.labelTime.Text = tokens[1];
                     break;
                 case "dismantle":
                 case "flag":
                 case "none":
-                    {
-                        gui.modifyAddon(msg);
-                        break;
-                    }
-
+                    gui.ModifyAddon(msg);
+                    break;
+                case "minesleft":
+                    gui.labelDismantles.Text = tokens[1];
+                    break;
             }
             return;
         }

@@ -16,7 +16,6 @@ namespace Server
             NONE, DISMANTLED, FLAGGED
         }
         public bool opened;
-        private event EventHandler Open;
         public TileStatus status = TileStatus.CLEAN;
         public TileAddon addon = TileAddon.NONE;
 
