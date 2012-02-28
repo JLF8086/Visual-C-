@@ -23,28 +23,34 @@ namespace Server
 
         public static void Main()
         {
-            Console.WriteLine("Waiting for connections...");
-            Socket s = getConnection();
-            Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-            
-            try
+            while (true)
             {
-                while (true)
-                {
+                Console.WriteLine("Waiting for connections...");
+                Socket s = getConnection();
+                Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
-                    receiveMessage(s);
-                    if (!IsConnected(s))
+                try
+                {
+                    while (true)
                     {
-                        Console.WriteLine(s.RemoteEndPoint + " has disconnected");
-                        s.Close();
-                        break;
+
+                        receiveMessage(s);
+                        if (!IsConnected(s))
+                        {
+                            Console.WriteLine(s.RemoteEndPoint + " has disconnected");
+                            s.Close();
+                            break;
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Connection stopped: " + e);
-
+                catch (Exception e)
+                {
+                    Console.WriteLine("Connection stopped: " + e.Message);
+                }
+                if (!IsConnected(s))
+                {
+                    Console.WriteLine(s.RemoteEndPoint + " has disconnected..");
+                }
             }
 
         }
