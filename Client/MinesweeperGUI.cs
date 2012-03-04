@@ -14,11 +14,9 @@ namespace Client
     {
         public int height = Client.height, width = Client.width, mines = Client.mines;
         private MineFieldButton[,] butArray;
-        private TcpClient tcpclnt;
         private System.Timers.Timer timer;
-        public MinesweeperGUI(TcpClient tcpclnt)
+        public MinesweeperGUI()
         {
-            this.tcpclnt = tcpclnt;
             InitializeComponent();
         }
 
@@ -37,12 +35,13 @@ namespace Client
             timer.Close();
         }
 
-        public void EndGame()
+        public void EndGame(string victories)
         {
+
             foreach (MineFieldButton but in butArray)
                 but.MouseDown -= but_MouseClick;
             timer.Close();
-            MessageBox.Show("You win!");
+            MessageBox.Show("You win!\nTotal Victories: " + victories);
         }
 
         public void RevealTiles(string[] param)

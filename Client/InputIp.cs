@@ -18,24 +18,74 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
-            Client.height = Convert.ToInt32(textBox2.Text);
-            Client.width = Convert.ToInt32(textBox3.Text);
-            Client.mines = Convert.ToInt32(textBox4.Text);
-            if ((Client.height * Client.width) < Client.mines)
-            {
-                MessageBox.Show("Too many mines!");
+            if (!ValidateInput())
                 return;
-            }
-
-            if (Client.width < 5 || Client.height < 5)
-            {
-                MessageBox.Show("Width and height must be at least 5!");
-                return;
-            }
-            if (!(textBox1.Text.Length == 0))
-                Client.IP = textBox1.Text;
+            Client.height = Convert.ToInt32(heightBox.Text);
+            Client.width = Convert.ToInt32(widthBox.Text);
+            Client.mines = Convert.ToInt32(minesBox.Text);
+            if (!(ipBox.Text.Length == 0))
+                Client.IP = ipBox.Text;
             this.Dispose();
+        }
+
+        private bool ValidateInput()
+        {
+            bool validated = true;
+            int height = 0;
+            int width = 0;
+            errorProvider1.SetError(heightBox, string.Empty);
+            errorProvider1.SetError(widthBox, string.Empty);
+            errorProvider1.SetError(minesBox, string.Empty);
+            if (ipBox.Text.Length == 0)
+            {
+                errorProvider1.SetError(ipBox, "Can't leave this field empty!");
+                validated = false;
+            }
+            try
+            {
+                height = Convert.ToInt32(heightBox.Text);
+                if (height < 5 || height > 100)
+                {
+                    validated = false;
+                    errorProvider1.SetError(heightBox, "Must be between 5 and 100!");
+                }
+            }
+            catch
+            {
+                errorProvider1.SetError(heightBox, "Must be a number!");
+                validated = false;
+            }
+            try
+            {
+                width = Convert.ToInt32(widthBox.Text);
+                if (width < 5 || width > 100)
+                {
+                    validated = false;
+                    errorProvider1.SetError(widthBox, "Must be between 5 and 100!");
+                }
+            }
+            catch
+            {
+                errorProvider1.SetError(widthBox, "Must be a number!");
+                validated = false;
+            }
+            if (!validated)
+                return validated;
+            try
+            {
+                int mines = Convert.ToInt32(minesBox.Text);
+                if (mines < 0 || mines > height * width)
+                {
+                    validated = false;
+                    errorProvider1.SetError(minesBox, "Must be between 0 and height*width!");
+                }
+            }
+            catch
+            {
+                errorProvider1.SetError(minesBox, "Must be a number!");
+                validated = false;
+            }
+            return validated;
         }
 
     }

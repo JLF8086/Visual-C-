@@ -10,7 +10,7 @@ namespace Client
 {
     public class Client
     {
-        
+
         public static string IP;
         private static ASCIIEncoding asc = new ASCIIEncoding();
         private static TcpClient tcpclnt;
@@ -19,37 +19,27 @@ namespace Client
 
         public static void Main()
         {
-            try
+            while (true)
             {
-                while (true)
-                {
 
-                    try
-                    {
-                        Application.Run(new InputIp());
-                        tcpclnt = new TcpClient();
-                        if (IP == null)
-                            return;
-                        Console.WriteLine(IP);
-                        tcpclnt.Connect(IP, 8001);
-                        Console.WriteLine("Connection established");
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show("Error : " + e);
-                        continue;
-                    }
+                try
+                {
+                    IP = null;
+                    Application.Run(new InputIp());
+                    tcpclnt = new TcpClient();
+                    if (IP == null)
+                        return;
+                    Console.WriteLine(IP);
+                    tcpclnt.Connect(IP, 8001);
+                    Console.WriteLine("Connection established");
+                    gui = new MinesweeperGUI();
+                    Application.Run(gui);
                     break;
                 }
-                gui = new MinesweeperGUI(tcpclnt);
-                Application.Run(gui);
-
-            }
-
-            catch (Exception e)
-            {
-                MessageBox.Show("Error : " + e);
-                tcpclnt.Close();
+                catch (Exception e)
+                {
+                    MessageBox.Show("Could not establish a connection with the server: " + e.Message);
+                }
             }
         }
 
@@ -76,7 +66,7 @@ namespace Client
             switch (tokens[0])
             {
                 case "gameisover":
-                    gui.EndGame();
+                    gui.EndGame(tokens[1]);
                     break;
                 case "gamenotover":
                 case "ok":
@@ -102,6 +92,6 @@ namespace Client
             return;
         }
 
-        
+
     }
 }

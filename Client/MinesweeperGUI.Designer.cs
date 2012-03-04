@@ -93,6 +93,7 @@
             this.Name = "MinesweeperGUI";
             this.Text = "MinesweeperGUI";
             this.ResumeLayout(false);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 
         }
 

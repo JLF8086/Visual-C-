@@ -16,9 +16,10 @@ namespace Server
 
         private static Socket GetConnection()
         {
-            listener.Stop();
+            
             listener.Start();
             Socket s = listener.AcceptSocket();
+            listener.Stop();
             return s;
         }
 
@@ -41,7 +42,7 @@ namespace Server
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Connection stopped: " + e.Message);
+                    Console.WriteLine("Connection stopped: " + e);
                 }
                 finally
                 {
@@ -83,7 +84,10 @@ namespace Server
                 case "isgameover?":
                 {
                     if (game.IsOver())
-                        s.Send(enc.GetBytes("gameisover"));
+                    {
+                        Stats.AddVictory();
+                        s.Send(enc.GetBytes("gameisover " + Stats.Victories));
+                    }
                     else
                         s.Send(enc.GetBytes("gamenotover"));
                     break;
