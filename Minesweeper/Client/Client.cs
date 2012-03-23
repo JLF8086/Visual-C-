@@ -17,6 +17,7 @@ namespace Client
         private static MinesweeperGUI gui;
         public static int height, width, mines;
 
+
         public static void Main()
         {
             while (true)
