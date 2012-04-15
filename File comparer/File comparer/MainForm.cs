@@ -14,9 +14,20 @@ namespace File_comparer
 {
     public partial class MainForm : Form
     {
+
+        private string folderName;
+        private List<string> files;
+        private List<string> duplicateHashes;
+        private Dictionary<string, string> filesWithHashes;
+        private Random rand = new Random();
+        private Queue<string> hashesToPrint;
+        private int conflictNumber;
+        private bool firstPage;
+
         public MainForm()
         {
             InitializeComponent();
+            this.MaximumSize = this.MinimumSize = this.Size;
         }
 
         [STAThread]
@@ -52,15 +63,14 @@ namespace File_comparer
             }
             foreach (string key in filesWithHashes.Keys)
                 fileInfoGridView.Rows.Add(new Object[] { key.Replace(folderName + "\\", String.Empty), filesWithHashes[key] });
+            for (int i = 0; i < fileInfoGridView.Rows.Count; i++)
+                fileInfoGridView.Rows[i].HeaderCell.Value = (i+1).ToString();
             fileInfoGridView.Enabled = true;
             controlsGroupBox.Enabled = true;
             markDupesButton.Enabled = false;
             duplicateHashes = null;
+            printToolStripMenuItem.Enabled = printPreviewToolStripMenuItem.Enabled = false;
         }
-
-
-
-
 
         private void Run()
         {
@@ -118,12 +128,7 @@ namespace File_comparer
             return sb.ToString();
         }
 
-        private string folderName;
-        private List<string> files;
-        private List<string> duplicateHashes;
-        private Dictionary<string, string> filesWithHashes;
-        private Random rand = new Random();
-
+        
         private void button1_Click(object sender, EventArgs e)
         {
             if (!ValidatedInput())
@@ -174,12 +179,7 @@ namespace File_comparer
             return retval;
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            PrepareForWork();
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
             PrepareForWork();
         }
@@ -195,6 +195,91 @@ namespace File_comparer
                 foreach (DataGridViewRow row in fileInfoGridView.Rows)
                     if (row.Cells[1].Value.Equals(hash))
                         row.DefaultCellStyle.BackColor = Color.Linen;
+            printPreviewToolStripMenuItem.Enabled = printToolStripMenuItem.Enabled = true;
+        }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (printDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                hashesToPrint = new Queue<string>(duplicateHashes);
+                conflictNumber = 0;
+                this.firstPage = true;
+                printDocument1.Print();
+            }
+        }
+
+        private void printPreviewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hashesToPrint = new Queue<string>(duplicateHashes);
+            conflictNumber = 0;
+            this.firstPage = true;
+            PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog();
+            printPreviewDialog.Document = printDocument1;
+            printPreviewDialog.Show();
+        }
+
+        private void printPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            Font titleFont = new Font("Arial", 18);
+            Font headerFont = new Font("Arial", 12);
+            Font textFont = new Font("Arial", 10);
+            float yPos = 0;
+            float leftMargin = e.MarginBounds.Left;
+            float topMargin = e.MarginBounds.Top;
+            yPos += topMargin;
+            if (this.firstPage)
+            {
+                string str = "Duplicate File Report";
+                e.Graphics.DrawString(str, titleFont, Brushes.Black, leftMargin + 
+                    ((e.MarginBounds.Width - e.Graphics.MeasureString(str, titleFont).Width)/2), yPos);
+                yPos += titleFont.GetHeight(e.Graphics);
+                e.Graphics.DrawString("Inspected folder (" + (radioButton1.Checked ? "Immediate" : "Full") + "):"
+                    + "\n" +  folderName
+                    , textFont, Brushes.Black, leftMargin, yPos);
+                yPos += 2*headerFont.GetHeight(e.Graphics);
+                if (hashesToPrint.Count == 0)
+                {
+                    e.Graphics.DrawString("No conflicts found", titleFont, Brushes.Green, leftMargin, yPos);
+                    yPos += titleFont.GetHeight(e.Graphics);
+                }
+                this.firstPage = false;
+            }
+
+            while (hashesToPrint.Count > 0)
+            {
+                float requiredHeight = headerFont.GetHeight(e.Graphics) + textFont.GetHeight(e.Graphics)*2;
+                string hash = hashesToPrint.Peek();
+                var files = from f in filesWithHashes
+                            where f.Value == hash
+                            select f.Key;
+                int duplicateCount = filesWithHashes.Count(a => a.Key == hash);
+                requiredHeight += duplicateCount * textFont.GetHeight(e.Graphics);
+                if (requiredHeight - textFont.GetHeight(e.Graphics) > e.MarginBounds.Height - yPos)
+                    break;
+                else
+                {
+                    ++conflictNumber;
+                    e.Graphics.DrawString(String.Format("Conflict {0}:", conflictNumber), headerFont, Brushes.Red, leftMargin, yPos);
+                    yPos += headerFont.GetHeight(e.Graphics);
+                    e.Graphics.DrawString(String.Format("Hash : {0}", hash), textFont, Brushes.Green, leftMargin, yPos);
+                    yPos += headerFont.GetHeight(e.Graphics);
+                    
+                    foreach (string file in files)
+                    {
+                        e.Graphics.DrawString(file.Replace(folderName, String.Empty), textFont, Brushes.Olive, leftMargin, yPos);
+                        yPos += textFont.GetHeight(e.Graphics);
+                    }
+                    hashesToPrint.Dequeue();
+                }
+            }
+            if (hashesToPrint.Count > 0)
+                e.HasMorePages = true;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
         }
     }
 }

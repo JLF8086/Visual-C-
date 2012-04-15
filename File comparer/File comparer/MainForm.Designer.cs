@@ -42,6 +42,8 @@
             this.FileColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HashColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.controlsGroupBox = new System.Windows.Forms.GroupBox();
+            this.markDupesButton = new System.Windows.Forms.Button();
+            this.resetButton = new System.Windows.Forms.Button();
             this.threadNumberLabel = new System.Windows.Forms.Label();
             this.delayLabel = new System.Windows.Forms.Label();
             this.delayTextBox = new System.Windows.Forms.TextBox();
@@ -51,8 +53,8 @@
             this.startButton = new System.Windows.Forms.Button();
             this.currentFolderLabel = new System.Windows.Forms.Label();
             this.textBoxErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.resetButton = new System.Windows.Forms.Button();
-            this.markDupesButton = new System.Windows.Forms.Button();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileInfoGridView)).BeginInit();
             this.controlsGroupBox.SuspendLayout();
@@ -92,15 +94,19 @@
             // 
             // printToolStripMenuItem
             // 
+            this.printToolStripMenuItem.Enabled = false;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.printToolStripMenuItem.Text = "Print..";
+            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // printPreviewToolStripMenuItem
             // 
+            this.printPreviewToolStripMenuItem.Enabled = false;
             this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
             this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.printPreviewToolStripMenuItem.Text = "Print Preview";
+            this.printPreviewToolStripMenuItem.Click += new System.EventHandler(this.printPreviewToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -108,6 +114,7 @@
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -129,6 +136,7 @@
             this.fileInfoGridView.AllowUserToDeleteRows = false;
             this.fileInfoGridView.AllowUserToOrderColumns = true;
             this.fileInfoGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.fileInfoGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllHeaders;
             this.fileInfoGridView.BackgroundColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.fileInfoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileInfoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -138,6 +146,7 @@
             this.fileInfoGridView.Location = new System.Drawing.Point(12, 72);
             this.fileInfoGridView.Name = "fileInfoGridView";
             this.fileInfoGridView.ReadOnly = true;
+            this.fileInfoGridView.RowHeadersWidth = 50;
             this.fileInfoGridView.Size = new System.Drawing.Size(526, 442);
             this.fileInfoGridView.TabIndex = 0;
             // 
@@ -173,6 +182,27 @@
             this.controlsGroupBox.TabIndex = 1;
             this.controlsGroupBox.TabStop = false;
             this.controlsGroupBox.Text = "Controls";
+            // 
+            // markDupesButton
+            // 
+            this.markDupesButton.Enabled = false;
+            this.markDupesButton.Location = new System.Drawing.Point(6, 181);
+            this.markDupesButton.Name = "markDupesButton";
+            this.markDupesButton.Size = new System.Drawing.Size(83, 23);
+            this.markDupesButton.TabIndex = 8;
+            this.markDupesButton.Text = "Mark Dupes";
+            this.markDupesButton.UseVisualStyleBackColor = true;
+            this.markDupesButton.Click += new System.EventHandler(this.markDupesButton_Click);
+            // 
+            // resetButton
+            // 
+            this.resetButton.Location = new System.Drawing.Point(6, 210);
+            this.resetButton.Name = "resetButton";
+            this.resetButton.Size = new System.Drawing.Size(83, 23);
+            this.resetButton.TabIndex = 7;
+            this.resetButton.Text = "Reset";
+            this.resetButton.UseVisualStyleBackColor = true;
+            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
             // threadNumberLabel
             // 
@@ -217,7 +247,7 @@
             this.radioButton2.TabIndex = 2;
             this.radioButton2.Text = "All Inner Directories";
             this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
             // radioButton1
             // 
@@ -230,7 +260,7 @@
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Immediate Directory";
             this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
             // startButton
             // 
@@ -256,39 +286,27 @@
             // 
             this.textBoxErrorProvider.ContainerControl = this;
             // 
-            // resetButton
+            // printDialog1
             // 
-            this.resetButton.Location = new System.Drawing.Point(6, 210);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(83, 23);
-            this.resetButton.TabIndex = 7;
-            this.resetButton.Text = "Reset";
-            this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            this.printDialog1.UseEXDialog = true;
             // 
-            // markDupesButton
+            // printDocument1
             // 
-            this.markDupesButton.Enabled = false;
-            this.markDupesButton.Location = new System.Drawing.Point(6, 181);
-            this.markDupesButton.Name = "markDupesButton";
-            this.markDupesButton.Size = new System.Drawing.Size(83, 23);
-            this.markDupesButton.TabIndex = 8;
-            this.markDupesButton.Text = "Mark Dupes";
-            this.markDupesButton.UseVisualStyleBackColor = true;
-            this.markDupesButton.Click += new System.EventHandler(this.markDupesButton_Click);
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printPage);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(737, 536);
+            this.ClientSize = new System.Drawing.Size(737, 527);
             this.Controls.Add(this.currentFolderLabel);
             this.Controls.Add(this.controlsGroupBox);
             this.Controls.Add(this.fileInfoGridView);
             this.Controls.Add(this.menuStrip1);
+            this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "File Comparer";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileInfoGridView)).EndInit();
@@ -326,6 +344,8 @@
         private System.Windows.Forms.ErrorProvider textBoxErrorProvider;
         private System.Windows.Forms.Button markDupesButton;
         private System.Windows.Forms.Button resetButton;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }
 
