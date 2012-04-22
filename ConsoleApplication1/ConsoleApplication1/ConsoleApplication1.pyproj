@@ -5,13 +5,17 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{015970b4-8db3-4487-b95d-60fcc1f49fea}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Program.py</StartupFile>
+    <StartupFile>prietaisas.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <AssemblyName>ConsoleApplication1</AssemblyName>
     <Name>ConsoleApplication1</Name>
     <RootNamespace>ConsoleApplication1</RootNamespace>
+    <InterpreterPath />
+    <CommandLineArguments />
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <DebugStdLib>False</DebugStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +26,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="prietaisas.py" />
     <None Include="Program.py" />
+    <None Include="tinklai.py" />
   </ItemGroup>
 </Project>

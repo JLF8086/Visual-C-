@@ -23,6 +23,7 @@ namespace File_comparer
         private Queue<string> hashesToPrint;
         private int conflictNumber;
         private bool firstPage;
+        delegate void Invoke(DataGridViewRow row, string hash);
 
         public MainForm()
         {
@@ -72,6 +73,11 @@ namespace File_comparer
             printToolStripMenuItem.Enabled = printPreviewToolStripMenuItem.Enabled = false;
         }
 
+        private void UpdateCell(DataGridViewRow row, string value)
+        {
+            row.Cells[1].Value = value;
+        }
+
         private void Run()
         {
             int sleepPeriod = Int32.Parse(delayTextBox.Text);
@@ -89,7 +95,8 @@ namespace File_comparer
                 foreach (DataGridViewRow row in this.fileInfoGridView.Rows)
                     if (row.Cells[0].Value.Equals(selectedFile.Replace(folderName + "\\", String.Empty)))
                     {
-                        row.Cells[1].Value = hash;
+                        //row.Cells[1].Value = hash;
+                        this.BeginInvoke(new Invoke(UpdateCell), new object[] { row, hash });
                         break;
                     }
                 Thread.Sleep(sleepPeriod);
