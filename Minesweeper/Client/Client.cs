@@ -52,7 +52,7 @@ namespace Client
         }
         
         /// <summary>
-        /// Converts an ascii message into a bytes and sends it to a server through the clientSocket.
+        /// Converts an ascii message into bytes and sends it to a server through the clientSocket.
         /// </summary>
         /// <param name="msg">The message to be sent.</param>
         public static void SendMessage(string msg)
