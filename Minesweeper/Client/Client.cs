@@ -42,6 +42,7 @@ namespace Client
                     if (closingReason != String.Empty)
                         MessageBox.Show(closingReason);
                     break;
+                    int i = 0;
                 }
                 catch (Exception e)
                 {
