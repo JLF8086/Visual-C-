@@ -28,7 +28,6 @@ namespace Client
             while (true)
             {
 
-
                 try
                 {
                     IP = null;
