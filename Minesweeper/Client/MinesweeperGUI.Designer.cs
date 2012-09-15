@@ -90,10 +90,11 @@
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.mineField);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "MinesweeperGUI";
             this.Text = "MinesweeperGUI";
             this.ResumeLayout(false);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 
         }
 

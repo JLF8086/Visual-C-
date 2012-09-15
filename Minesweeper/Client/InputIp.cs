@@ -44,10 +44,10 @@ namespace Client
             try
             {
                 height = Convert.ToInt32(heightBox.Text);
-                if (height < 5 || height > 100)
+                if (height < 5 || height > 50)
                 {
                     validated = false;
-                    errorProvider1.SetError(heightBox, "Must be between 5 and 100!");
+                    errorProvider1.SetError(heightBox, "Must be between 5 and 50!");
                 }
             }
             catch
@@ -58,10 +58,10 @@ namespace Client
             try
             {
                 width = Convert.ToInt32(widthBox.Text);
-                if (width < 5 || width > 100)
+                if (width < 5 || width > 50)
                 {
                     validated = false;
-                    errorProvider1.SetError(widthBox, "Must be between 5 and 100!");
+                    errorProvider1.SetError(widthBox, "Must be between 5 and 50!");
                 }
             }
             catch

@@ -138,8 +138,11 @@ namespace Server
             for (int i = 0; i < width; i++)
                 for (int j = 0; j < height; j++)
                 {
-                    ret += Reveal(i, j) + " ";
-                    tiles[i, j].addon = Tile.TileAddon.NONE;
+                    if (!tiles[i, j].opened)
+                    {
+                        ret += Reveal(i, j) + " ";
+                        tiles[i, j].addon = Tile.TileAddon.NONE;
+                    }
                 }
                 
             return ret;
@@ -152,8 +155,8 @@ namespace Server
 
             else
             {
-                int minesCount = SurroundingMineCount(x, y);
-                return (x + "*" + y + "*" + minesCount);
+                int mineCount = SurroundingMineCount(x, y);
+                return (x + "*" + y + "*" + mineCount);
             }
             
         }

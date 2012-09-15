@@ -10,10 +10,15 @@ namespace Client
 {
     public class Client
     {
+        private delegate void UpdateTimerLabel(string time);
+        private delegate void UpdateDismantlesLabel(string dismantles);
 
+        private static string closingReason = String.Empty;
         public static string IP;
+        private static int port = 8001;
         private static ASCIIEncoding asc = new ASCIIEncoding();
-        private static TcpClient tcpclnt;
+        //private static TcpClient tcpclnt;
+        private static Socket clientSocket;
         private static MinesweeperGUI gui;
         public static int height, width, mines;
 
@@ -27,40 +32,56 @@ namespace Client
                 {
                     IP = null;
                     Application.Run(new InputIp());
-                    tcpclnt = new TcpClient();
+                    clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     if (IP == null)
                         return;
-                    Console.WriteLine(IP);
-                    tcpclnt.Connect(IP, 8001);
+                    clientSocket.Connect(IP, port);
                     Console.WriteLine("Connection established");
                     gui = new MinesweeperGUI();
                     Application.Run(gui);
+                    if (closingReason != String.Empty)
+                        MessageBox.Show(closingReason);
                     break;
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show("Could not establish a connection with the server: " + e.Message);
                 }
+                clientSocket.Close();
             }
         }
-
+        
+        /// <summary>
+        /// Converts an ascii message into a bytes and sends it to a server through the clientSocket.
+        /// </summary>
+        /// <param name="msg">The message to be sent.</param>
         public static void SendMessage(string msg)
         {
-            string response = String.Empty;
-            Stream stream = tcpclnt.GetStream();
-            byte[] msgBytes = asc.GetBytes(msg);
-            stream.Write(msgBytes, 0, msgBytes.Length);
-            byte[] buffer = new byte[gui.width * gui.height * 9];
-            int responseLength = stream.Read(buffer, 0, buffer.Length);
-            for (int i = 0; i < responseLength; i++)
+            try
             {
-                response += (char)buffer[i];
+                StringBuilder responseBuilder = new StringBuilder();
+                byte[] msgBytes = asc.GetBytes(msg);
+                clientSocket.Send(msgBytes, 0, msgBytes.Length, SocketFlags.None);
+                //stream.Write(msgBytes, 0, msgBytes.Length);
+                byte[] buffer = new byte[gui.width * gui.height * 9];
+                int responseLength = clientSocket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+                for (int i = 0; i < responseLength; i++)
+                {
+                    responseBuilder.Append((char)buffer[i]);
+                }
+                ParseMessage(responseBuilder.ToString());
             }
-            ParseMessage(response);
-
+            catch (Exception e)
+            {
+                gui.Close();
+                closingReason = e.Message;
+            }
 
         }
-
+        /// <summary>
+        /// Parses the message received from the server and does the appropriate action.
+        /// </summary>
+        /// <param name="msg">The message to be parsed.</param>
         public static void ParseMessage(string msg)
         {
             string[] tokens = msg.Split(' ');
@@ -79,7 +100,7 @@ namespace Client
                     gui.RevealTiles(tokens);
                     break;
                 case "elapsedtime":
-                    gui.labelTime.Text = tokens[1];
+                    gui.labelTime.Invoke((Action)delegate { gui.labelTime.Text = tokens[1]; });
                     break;
                 case "dismantle":
                 case "flag":
@@ -87,12 +108,15 @@ namespace Client
                     gui.ModifyAddon(msg);
                     break;
                 case "minesleft":
-                    gui.labelDismantles.Text = tokens[1];
+                    gui.labelTime.Invoke((Action)delegate { gui.labelDismantles.Text = tokens[1]; });
                     break;
             }
             return;
         }
 
 
+
+
+        
     }
 }

@@ -19,11 +19,18 @@ namespace Client
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// Occurs when the game is lost (player leftclicked a mine).
+        /// Unsubscribes the MouseClick events from all MineFieldButtons.
+        /// Receives an array of parameters with the following format:
+        /// { "explode", "0*0*status_id", "0*1*status_id", ... , "max_x*max_y*status_id" }
+        /// This array represents the status of the entire MineField and the method changes the appearance of the individual buttons based on it.
+        /// </summary>
+        /// <param name="param">The array of arguments</param>
         public void Explode(string[] param)
         {
             foreach (MineFieldButton but in butArray)
-                but.MouseDown -= but_MouseClick;
+                but.MouseDown -= OnTileClick;
             for (int i = 1; i < param.Length; i++)
             {
                 string[] tokens = param[i].Split('*');
@@ -39,7 +46,7 @@ namespace Client
         {
 
             foreach (MineFieldButton but in butArray)
-                but.MouseDown -= but_MouseClick;
+                but.MouseDown -= OnTileClick;
             timer.Close();
             MessageBox.Show("You win!\nTotal Victories: " + victories);
         }
@@ -63,7 +70,7 @@ namespace Client
             fillPanel(this.mineField);
             labelTime.Text = "0";
             timer = new System.Timers.Timer();
-            timer.Interval = 1000;
+            timer.Interval = 500;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(onTick);
             labelDismantles.Text = mines.ToString();
             timer.Start();
@@ -90,7 +97,7 @@ namespace Client
                     but.Width = pan.Width / this.width;
                     but.Left = but.Width * i;
                     but.Top = but.Height * j;
-                    but.MouseDown += new MouseEventHandler(but_MouseClick);
+                    but.MouseDown += new MouseEventHandler(OnTileClick);
                     butArray[i, j] = but;
                     but.Visible = false;
                     pan.Controls.Add(but);
@@ -100,8 +107,14 @@ namespace Client
 
         }
 
-
-        void but_MouseClick(object sender, MouseEventArgs e)
+        /// <summary>
+        /// This method should be called upon clicking a MineFieldButton.
+        /// It checks whether the click was right or left and sends the server a message of the following format:
+        /// "(leftclick|rightclick) x_coordinate y_coordinate"
+        /// </summary>
+        /// <param name="sender">The MineFieldButton object that was clicked to call this method.</param>
+        /// <param name="e">Mouse click arguments.</param>
+        void OnTileClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -113,7 +126,12 @@ namespace Client
             Client.SendMessage("isgameover?");
         }
 
-
+        /// <summary>
+        /// This method is called when a message of the following format is parsed:
+        /// "(dismantle|flag|none|) x_coordinate y_coordinate)"
+        /// It sets a MineFieldButton's icon depending on this message.
+        /// </summary>
+        /// <param name="msg">The message with the arguments.</param>
         public void ModifyAddon(string msg)
         {
             string[] tokens = msg.Split(' ');
