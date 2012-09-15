@@ -25,6 +25,7 @@ namespace Client
 
         public static void Main()
         {
+
             while (true)
             {
 
