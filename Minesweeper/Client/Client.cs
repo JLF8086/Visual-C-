@@ -17,6 +17,7 @@ namespace Client
         public static string IP;
         private static int port = 8001;
         private static ASCIIEncoding asc = new ASCIIEncoding();
+        private static bool readyToSend = true;
         //private static TcpClient tcpclnt;
         private static Socket clientSocket;
         private static MinesweeperGUI gui;
@@ -62,6 +63,9 @@ namespace Client
             {
                 StringBuilder responseBuilder = new StringBuilder();
                 byte[] msgBytes = asc.GetBytes(msg);
+                while (!readyToSend)
+                    ;
+                readyToSend = false;
                 clientSocket.Send(msgBytes, 0, msgBytes.Length, SocketFlags.None);
                 //stream.Write(msgBytes, 0, msgBytes.Length);
                 byte[] buffer = new byte[gui.width * gui.height * 9];
@@ -71,6 +75,7 @@ namespace Client
                     responseBuilder.Append((char)buffer[i]);
                 }
                 ParseMessage(responseBuilder.ToString());
+                readyToSend = true;
             }
             catch (Exception e)
             {

@@ -23,7 +23,7 @@ namespace Server
 
         private static Socket GetConnection()
         {
-            listener.Listen(100);
+            listener.Listen(5);
             Socket s = listener.Accept();
             return s;
         }

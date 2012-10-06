@@ -12,7 +12,7 @@ namespace Server
         private static int port = 8001;
         private static ASCIIEncoding enc = new ASCIIEncoding();
         private Game game;
-        private static byte[] buffer = new byte[1000];
+        private static byte[] buffer = new byte[32];
 
         public Player(Socket s)
         {
