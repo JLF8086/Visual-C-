@@ -1,0 +1,29 @@
+﻿<Window x:Class="WPF_IRC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="502" Width="1077" DataContext="{Binding}">
+    <Grid Name="mainGrid" Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,40,0,0" />
+        <TreeView Height="Auto" HorizontalAlignment="Stretch" Name="connectionTreeView" VerticalAlignment="Stretch" Width="Auto" ItemsSource="{Binding}" DataContext="{Binding}" Margin="0,40,0,0"></TreeView>
+        <Grid Height="34" HorizontalAlignment="Stretch" Name="grid2" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="3" Background="#FFC7EFEF">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*" />
+                <ColumnDefinition Width="1055*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="47,6,0,0" Name="hostTextBox" VerticalAlignment="Top" Width="120" Text="irc.quakenet.org" Grid.Column="1" />
+            <Label Content="Host" Height="28" HorizontalAlignment="Left" Margin="6,4,0,0" Name="hostLabel" VerticalAlignment="Top" Grid.Column="1" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="217,6,0,0" Name="portTextBox" VerticalAlignment="Top" Width="120" Text="6667" Grid.Column="1" />
+            <Label Content="Port" Height="28" HorizontalAlignment="Left" Margin="179,4,0,0" Name="label1" VerticalAlignment="Top" Grid.Column="1" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="392,7,0,0" Name="nickTextBox" VerticalAlignment="Top" Width="120" Grid.Column="1" Text="Testuotojas69" />
+            <Label Content="Nick" Height="28" HorizontalAlignment="Left" Margin="353,5,0,0" Name="label2" VerticalAlignment="Top" Grid.Column="1" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="572,7,0,0" Name="userTextBox" VerticalAlignment="Top" Width="120" Grid.Column="1" Text="TestUseris" />
+            <Label Content="User" Height="28" HorizontalAlignment="Left" Margin="532,4,0,0" Name="label3" VerticalAlignment="Top" Grid.Column="1" />
+            <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="730,6,0,0" Name="button1" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button1_Click" />
+        </Grid>
+    </Grid>
+</Window>
