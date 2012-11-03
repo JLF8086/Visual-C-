@@ -3,13 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="502" Width="1077" DataContext="{Binding}">
     <Grid Name="mainGrid" Margin="0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="5*"/>
-        </Grid.ColumnDefinitions>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,40,0,0" />
-        <TreeView Height="Auto" HorizontalAlignment="Stretch" Name="connectionTreeView" VerticalAlignment="Stretch" Width="Auto" ItemsSource="{Binding}" DataContext="{Binding}" Margin="0,40,0,0"></TreeView>
         <Grid Height="34" HorizontalAlignment="Stretch" Name="grid2" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="3" Background="#FFC7EFEF">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0*" />
@@ -25,5 +18,6 @@
             <Label Content="User" Height="28" HorizontalAlignment="Left" Margin="532,4,0,0" Name="label3" VerticalAlignment="Top" Grid.Column="1" />
             <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="730,6,0,0" Name="button1" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button1_Click" />
         </Grid>
+        <TabControl ItemsSource="{Binding}"  Height="Auto" HorizontalAlignment="Stretch" Margin="1,40,0,0" Name="networksTabControl" VerticalAlignment="Stretch" Width="Auto"></TabControl>
     </Grid>
 </Window>

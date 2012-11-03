@@ -17,15 +17,17 @@ namespace WPF_IRC
     /// <summary>
     /// Interaction logic for serverWindow.xaml
     /// </summary>
-    public partial class ServerWindow : UserControl
+    public partial class NetworkInterfaceWindow : UserControl
     {
         public IrcNetwork Network { get; private set; }
 
-        public ServerWindow(IrcNetwork network)
+        public NetworkInterfaceWindow(IrcNetwork network)
         {
             InitializeComponent();
             this.Network = network;
+            this.DataContext = network;
             Network.messageReceived += new EventHandler(Network_messageReceived);
+            this.inputBox.Focus();
         }
 
         void Network_messageReceived(object sender, EventArgs e)
@@ -39,6 +41,7 @@ namespace WPF_IRC
         void updateTextBox(string msg)
         {
             textBox2.Text += msg;
+            textBox2.ScrollToEnd();
         }
 
         delegate void updateString(string str);
@@ -47,8 +50,8 @@ namespace WPF_IRC
         {
             if (e.Key == Key.Enter)
             {
-                Network.SubmitMessage(textBox1.Text);
-                textBox1.Text = String.Empty;
+                Network.ParseCommand(inputBox.Text);
+                inputBox.Text = String.Empty;
             }
         }
     }

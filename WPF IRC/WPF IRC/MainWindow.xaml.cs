@@ -22,9 +22,8 @@ namespace WPF_IRC
     public partial class MainWindow : Window
     {
         private Client client = new Client();
-        private Dictionary<TreeViewItem, UserControl> windowsByItem = new Dictionary<TreeViewItem, UserControl>();
-        private TreeViewItem previouslySelectedItem;
-
+        private Dictionary<object, object> networkTabControls = new Dictionary<object, object>();
+        private Dictionary<object, object> networkToTabItem = new Dictionary<object, object>();
         public MainWindow()
         {
             InitializeComponent();
@@ -39,51 +38,83 @@ namespace WPF_IRC
 
         private void handleNewNetwork(object sender, EventArgs e)
         {
-            TreeViewItem item = new TreeViewItem();
-            addContextMenu(item);
-            item.Header = (e as IrcEventArgs).Network;
-            var serverWindow = new ServerWindow((e as IrcEventArgs).Network);
-            windowsByItem.Add(item, serverWindow);
-            Grid.SetColumn(serverWindow, 2);
-            if (previouslySelectedItem != null)
-                mainGrid.Children.Remove(windowsByItem[previouslySelectedItem]);
-            mainGrid.Children.Add(serverWindow);
-            item.Selected += new RoutedEventHandler(treeViewItemSelected);
-            previouslySelectedItem = item;
-            connectionTreeView.Items.Add(item);
+            TabItem newNetworkTab = new TabItem();
+            newNetworkTab.Header = (e as IrcEventArgs).Network.DisplayName;
+            TabControl newNetworkTabControl = new TabControl();
+            newNetworkTab.Content = newNetworkTabControl;
+            newNetworkTabControl.Items.Add(new TabItem() { Content = new NetworkInterfaceWindow((e as IrcEventArgs).Network),
+                                                           Header = (e as IrcEventArgs).Network.DisplayName });
+            networkTabControls.Add((e as IrcEventArgs).Network, newNetworkTabControl);
+            (e as IrcEventArgs).Network.joinedChannel += new EventHandler(handleNewChannel);
+            (e as IrcEventArgs).Network.leftChannel += new EventHandler(leaveChannel);
+            (e as IrcEventArgs).Network.networkQuit += new EventHandler(Network_networkQuit);
+            
+            //TabItem networkTab
+            networkToTabItem.Add((e as IrcEventArgs).Network, newNetworkTab);
+            networksTabControl.Items.Add(newNetworkTab);
+            newNetworkTab.IsSelected = true;
+        }
+
+        void Network_networkQuit(object sender, EventArgs e)
+        {
+            object[] param = new object[2];
+            param[1] = sender as IrcNetwork;
+            this.Dispatcher.Invoke(new updateString(deleteNetworkTab), param);
+        }
+
+        void deleteNetworkTab(Channel chan, IrcNetwork network)
+        {
+            //System.Windows.MessageBox.Show(networksTabControl.Items.Contains(networkTabControls[network as IrcNetwork]).ToString());
+            TabItem requiredItem = networkToTabItem[network] as TabItem;
+            networksTabControl.Items.Remove(requiredItem);
+            //networkToTabItem.Remove(network);
+            //networkTabControls.Remove((network as IrcNetwork));
+        }
+
+        private void handleNewChannel(object sender, EventArgs e)
+        {
+            IrcNetwork network = (sender as IrcNetwork);
+
+            Channel chan = (e as ChannelEventArgs).Channel;
+            object[] param = new object[2];
+            param[0] = chan;
+            param[1] = network;
+            this.Dispatcher.Invoke(new updateString(updateNetworkTab), param);
+            
+        }
+
+        void updateNetworkTab(Channel chan, IrcNetwork network)
+        {
+            TabItem item = new TabItem() { Header = chan.Name };
+            (networkTabControls[network] as TabControl).Items.Add(item);
+            item.Content = new ChannelInterfaceWindow(chan);
+            chan.channelLeft += new EventHandler(leaveChannel);
             item.IsSelected = true;
         }
 
-
-        void treeViewItemSelected(object sender, RoutedEventArgs e)
+        void deleteChannelTab(Channel chan, IrcNetwork network)
         {
-            if (previouslySelectedItem != null)
-                mainGrid.Children.Remove(windowsByItem[previouslySelectedItem]);
-            mainGrid.Children.Add(windowsByItem[connectionTreeView.SelectedItem as TreeViewItem]);
-            previouslySelectedItem = connectionTreeView.SelectedItem as TreeViewItem;
-            //mainGrid.Children[2] = windowsByItem[connectionTreeView.SelectedItem as TreeViewItem];
+            TabControl networkTabControl = networkTabControls[network] as TabControl;
+            TabItem item = null;
+            foreach (TabItem tab in networkTabControl.Items)
+                if (tab.Header.Equals(chan.Name))
+                    item = tab;
+            if (item != null)
+                networkTabControl.Items.Remove(item);
         }
 
-        private void addContextMenu(TreeViewItem item)
+        delegate void updateString(Channel chan, IrcNetwork network);
+
+        private void leaveChannel(object sender, EventArgs e)
         {
-            item.ContextMenuOpening += new ContextMenuEventHandler(item_ContextMenuOpening);
-            var menu = new ContextMenu();
-            var closeMenuItem = new MenuItem();
-            closeMenuItem.Header = "Close";
-            closeMenuItem.Click += new RoutedEventHandler(deleteSelectedMenuItem);
-            item.ContextMenu = new ContextMenu();
-            item.ContextMenu.Items.Add(closeMenuItem);
+            object[] param = new object[2];
+            param[0] = (sender as Channel);
+            param[1] = (sender as Channel).Network;
+            this.Dispatcher.Invoke(new updateString(deleteChannelTab), param);
         }
 
-        void item_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            (sender as TreeViewItem).IsSelected = true;
-        }
 
-        void deleteSelectedMenuItem(object sender, RoutedEventArgs e)
-        {
-            connectionTreeView.Items.Remove(connectionTreeView.SelectedItem);
-        }
+
 
     }
 }
